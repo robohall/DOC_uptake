@@ -1,0 +1,8 @@
+﻿stream,site,doc_release,code,date,length,salt_mass,sugar_mass,doc_mass_13C_mg,width,alkalinity,travel_time,NomTT.min,v.ms,PeakT.min,Qest.Ls,Notes
+blaine,up,glucose,b_g1_up,8/8/19,41,400,3,1200,1.36,5.22,76.8,76.80979659,0.008896435,53,2.065685037,NA
+blaine,down,glucose,b_g1_down,8/8/19,61,400,3,1200,1.4,5.22,134,71.51072652,0.014216981,57,3.489567621,TT estimate is too fast
+blaine,up,glucose,b_g2_up,8/15/19,41,400,3,1200,1.36,5.3,74,81.53613265,0.008380743,61.75,2.308733196,sensor data were similar nomTT=82.3 v=0.0083 peakT=65.83 Qest=2.21
+blaine,down,glucose,b_g2_down,8/15/19,61,400,3,1200,1.4,5.3,145,113.6653117,0.008944388,95.5,3.449857955,sensor data were nomTT = 131.8 v=0.0077 peakT=109 Qest= 3.08
+blaine,up,leachate,b_l_up,8/9/19,41,400,,1160,1.36,5.42,80,91.08989975,0.007501746,73,2.528509056,NA
+blaine,down,leachate,b_l_down,8/9/19,61,400,,1160,1.4,5.42,150,99.63876601,0.010203525,76,4.244349968,TT estimate is too fast
+mf,down,glucose,sc,8/12/19,595,10200,9,3600,9,1.9,,NA,NA,NA,NA,NA

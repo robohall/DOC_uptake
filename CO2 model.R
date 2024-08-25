@@ -79,13 +79,16 @@ Carbfrom_D_A <- function(K1, K2, D1, A){
 }
 
 
-Carbfrom_D_A(K1, K2, 5.473, A1_molL)
-
 
 ## This function calculates KO2 at any given tempertaure from K600. via schmidt number scaling.  The scaling equation if From Jähne et al. (1987), Schmidt number conversions from Wanninkhof et al. 1992.
 Kcor<-function (temp,K600) {
   K600/(600/(1800.6-(temp*120.1)+(3.7818*temp^2)-(0.047608*temp^3)))^-0.5
 }
+
+KCO2fromK600<- function (temp,K600) {
+  K600/(600/(1742-(temp*91.24)+(2.208*temp^2)-(0.0219*temp^3)))^-0.5
+}
+
 
 ###########################################################################
 ## Start by establishing the first DIC value using CO2 and alkalinity
@@ -96,14 +99,14 @@ Kcor<-function (temp,K600) {
 # Need K1, K2, CO2 mol/L, and Alkalinity mol/L for Carbfrom_C_A function
 
 # Calc starting K1 and K2
-K1 <- K1calc(dat$white_temp[1])
-K2 <- K2calc(dat$white_temp[1])
+K1 <- K1calc(dat$bela_temp[1])
+K2 <- K2calc(dat$bela_temp[1])
 
 # Calc starting A in mol/L
 #A1 <- pH_Alk_data[which(pH_Alk_data$SampleID == start_ID),]$Alk_mgLCaCO3
 #A1_molL <- A1*(1/100.0869)*(1/1000) ## actually convert to mol/L
 A1_molL<-alk
-D1_CarbEq <- Carbfrom_C_A(K1, K2, dat$white_co2_conc[1]/12, A1_molL)
+D1_CarbEq <- Carbfrom_C_A(K1, K2, dat$bela_co2_conc[1]/12, A1_molL)
 D1_CarbEq
 
 ##########################################################################
@@ -120,35 +123,37 @@ D1_CarbEq
 # C1 is from the previous timestep
 # GW will be calculated as an anomaly
 
-GPP <- -10/32 ##  mol m2 d
-ER <- 11/32
+GPP <- -11/32 ##  mol m2 d
+ER <- 12/32
 K <- 13.5
 z <- 0.2
 ts <- 10/(60*24)
 bp <- 0.9*760
 light <- dat$neplight
-temp <- dat$white_temp
+temp <- dat$bela_temp
 
 
 D.mod <- numeric(length(dat$white_co2))
 D.mod[1]<-D1_CarbEq$D
-C.mod<-dat$white_co2_conc[1]/12
+pH.mod<-D1_CarbEq$pH
+
+C.mod<-dat$bela_co2_conc[1]/12
 # forward model
 
-##this is wrong!
 
-
-for (i in 2:length(dat$white_temp)) {
+for (i in 2:length(dat$bela_temp)) {
   
   D.mod[i]<- D.mod[i-1] + 
     ((GPP/z)*(light[i]/(sum(light)/6))) + 
     ER*ts/z +
-    (Kcor(temp[i],K))*ts*(csat(temp[i],bp) - C.mod[i-1]) 
+    KCO2fromK600(temp[i],K)*ts*(csat(temp[i],bp) - C.mod[i-1]) 
 Ceq<-Carbfrom_D_A(D1=D.mod[i-1],K1=K1calc(temp[i-1]), K2=K2calc(temp[i-1]), A=alk)
 C.mod[i]<-Ceq$C
+pH.mod[i]<-Ceq$pH
 }
 
 plot(C.mod*12)
+plot(pH.mod)
 
 pco2m$C.mod<- C.mod*12
 
@@ -160,4 +165,51 @@ plot(seq(1:length(dat$CO2_mmolL)),
      D.mod, type="l",xlab="Time", ylab="CO2 (mg/L)",
      cex.lab=1.5, cex.axis=1.5, lwd=2 )
 points(seq(1:length(dat$CO2_mmolL)), dat$CO2_mmolL)
+
+
+##DIC vs DO
+D.mod
+DIC_pred<-Carbfrom_C_A(K1calc(dat$bela_temp), K2calc(dat$bela_temp), dat$bela_co2_conc/12, A1_molL)$D
+DIC_sat <- Carbfrom_C_A(K1calc(dat$bela_temp), K2calc(dat$bela_temp), csat(dat$bela_temp, bp=bp), A1_molL)$D
+
+plot(DIC_pred,D.mod)
+plot(DIC_pred, ylim=c(5,5.5))
+points(DIC_sat)
+
+plot((dat$bela_co2_conc/12)-csat(dat$bela_temp, bp),DIC_pred-DIC_sat, ylim=c(0,0.35), xlim=c(0,0.35), xlab="Delta CO2 (mM)", ylab="Delta DIC (mM)")
+lines(c(0.05,0.15), c(0.22,0.32), lwd=3, col="red")
+#DO, trimmed bit
+blaine65_trim<-blaine_65[108:971,]
+
+
+plot(DIC_pred-DIC_sat, (blaine65_trim$oxy-blaine65_trim$oxysat)/32, xlim=c(-0.05,0.35), ylim=c(-0.2,0.2), pch=16, col="red" ,
+     xlab="DIC departure (mmol/L)", ylab="O2 departure (mmol/L)")
+lines(c(-0.05,0.35), c(0,0))
+lines( c(0,0), c(-0.2,0.2))
+lines( c(0.17,0.35), c(0.08,-0.1), lwd=2)
+points( (dat$bela_co2_conc/12)-csat(dat$bela_temp, bp), (blaine65_trim$oxy-blaine65_trim$oxysat)/32, 
+        col="lightblue" )
+
+
+#points((D.mod-DIC_sat),(blaine65_trim$oxy-blaine65_trim$oxysat)/32, col="lightgreen")
+
+
+plot(DIC_pred, ylim=c(3,5.5))
+points(DIC_sat)
+points(D.mod)
+
+plot(D.mod-DIC_sat,(blaine65_trim$oxy-blaine65_trim$oxysat)/32)
+
+NEP_C<-(1440/10)*(GPP*light/(sum(light)/6) +  mean(ER)*10/1440)
+
+
+
+plot(NEP_C*1000)
+plot(NEP_mmol)
+
+plot( (dat$bela_co2_conc/12)-csat(dat$bela_temp, bp), (blaine65_trim$oxy-blaine65_trim$oxysat)/32, xlim=c(-0.05,0.35), ylim=c(-0.2,0.2), pch=16, col="red" ,
+     xlab="DIC departure (mmol/L)", ylab="O2 depaorture (mmol/L)")
+lines(c(-0.05,0.35), c(0,0))
+lines( c(0,0), c(-0.2,0.2))
+lines( c(0.17,0.35), c(0.08,-0.1), lwd=2)
 
