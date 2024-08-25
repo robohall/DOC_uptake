@@ -17,6 +17,19 @@ data_doc <- data_doc %>%
 
 data_doc$DIC_flux = data_doc$DIC13 * data_doc$q
 
+
+######
+####### Integrate DOC taken up and CO2 released for a table
+####
+sum_c<- data_doc %>% group_by(code) %>% summarize(dicsum=(nutint(MinFrom0,DIC13,0)), docsum=(nutint(MinFrom0,removed_c,0)))
+sum_c<- left_join(sum_c, KQ, by="code")
+sum_c$doc_flux<- sum_c$docsum*sum_c$q
+sum_c$dic_flux<- sum_c$dicsum*sum_c$q
+sum_c$ratio<-sum_c$dic_flux/sum_c$doc_flux
+
+
+
+
 ##removed and produced plot
 
 ##datafram with labels

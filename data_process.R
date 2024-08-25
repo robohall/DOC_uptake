@@ -15,6 +15,10 @@ site_info$velocity<- site_info$length/site_info$travel_time
 #some means
 mean(site_info$alkalinity[1:6])
 
+
+
+
+#########Possible to skip running this code because the file it derives is saved.
 #### Blaine 8 August down
 
 b_g1_down_info<-site_info[site_info$code=="b_g1_down",]
@@ -423,20 +427,3 @@ write.csv(data_doc,"./data_doc.csv")
 
 
 
-lup<-data_doc[data_doc$code=="b_l_up",]
-lup$dic_flux<-lup$DIC13*lup$q
-
-nutint(lup$MinFrom0,lup$dic_flux,0)
-######
-####### Integrate DOC taken up and CO2 released for a table
-####
-sum_c<- data_doc %>% group_by(code) %>% summarize(dicsum=(nutint(MinFrom0,DIC13,0)), docsum=(nutint(MinFrom0,removed_c,0)))
-sum_c<- left_join(sum_c, KQ, by="code")
-sum_c$doc_flux<- sum_c$docsum*sum_c$q
-sum_c$dic_flux<- sum_c$dicsum*sum_c$q
-sum_c$ratio<-sum_c$dic_flux/sum_c$doc_flux
-
-mean(data_doc$DOC_conc, na.rm=T)
-
-hist(data_doc$DOC_conc)
-median(data_doc$DOC_conc, na.rm=T)

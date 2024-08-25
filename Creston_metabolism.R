@@ -68,7 +68,7 @@ blaine_65$light<- calc_light(blaine_65$solar.time, latitude=48.186, longitude=-1
 #MOdle with so called `normal' pooling becuase discharge did not change`
 blaine_name <- mm_name(type='bayes', pool_K600='normal', err_obs_iid = T, err_proc_iid =T)
 blaine_specs <- specs(blaine_name, K600_daily_meanlog_meanlog=2, K600_daily_meanlog_sdlog=0.7, K600_daily_sdlog_sigma=0.05, burnin_steps=1000, 
-                  saved_steps=1000)
+                  saved_steps=750)
 
 
 blaine_65_sm<-data.frame(DO.obs=blaine_65$oxy, DO.sat=blaine_65$oxysat, 
