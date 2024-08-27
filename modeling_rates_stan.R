@@ -43,6 +43,9 @@ KQ$code <-code
 
 KQ$vf<-( KQ$q*0.001*1440/site_info$width[1:6])* KQ$K
 
+vf_mmmin <- KQ$vf*1000/1440 ##mm/min
+mean(vf_mmmin[1:4])
+
 ##save lots of stan coding by --calculating--R_g outside of it
 R_g_out<- function(data,Q){
   removed_c_flux = data$removed_c*Q
