@@ -423,11 +423,11 @@ K<-  -(log(int13c/spcint) - log(sugar/condmass))/reach_length
 1/K
 #another way
 (log(int13c_flux) -log(sugar))/reach_length
- vf<-1440*K*data_Q*0.001/1.4
+vf<-1440*K*data_Q*0.001/1.4
 
 # WHat would DOC have to ve to support ER of -6 g O2
- ER.c<- 6*0.4
- ER.c/vf
+ER.c<- 6*0.4
+ER.c/vf
 
 ##########
 ##Now CO2
@@ -736,4 +736,3 @@ sum_file$equiltemp <- sum_file$eq_temp
 sum_file$volair <- sum_file$air_mL
 sum_file$volwater <- sum_file$H2O_mL
 sum_file$pressure <- 0.9
-

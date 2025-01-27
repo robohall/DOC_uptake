@@ -1,11 +1,10 @@
 
-
 library(streamMetabolizer)
 library(lubridate)
 
 
 
-# the below function estimates bp (in mm Hg) based on altitude and local sealevel corrected barmetric pressure.  
+# the below function estimates bp (in mm Hg) based  on altitude and local sealevel corrected barmetric pressure.  
 #In my case I assummed the same bp for each time step.  If you have actual bp dat you can merge later
 bpcalc<- function(bpst, alt) {
   bpst*25.4*exp((-9.80665*0.0289644*alt)/(8.31447*(273.15+15)))
@@ -64,30 +63,32 @@ blaine_65$solar.time<-convert_UTC_to_solartime(blaine_65$dtime, longitude= -114.
 
 blaine_65$light<- calc_light(blaine_65$solar.time, latitude=48.186, longitude=-114.133, max.PAR =2326, attach.units = F)
 
+dev.off()
+
 
 #MOdle with so called `normal' pooling becuase discharge did not change`
 blaine_name <- mm_name(type='bayes', pool_K600='normal', err_obs_iid = T, err_proc_iid =T)
 blaine_specs <- specs(blaine_name, K600_daily_meanlog_meanlog=2, K600_daily_meanlog_sdlog=0.7, K600_daily_sdlog_sigma=0.05, burnin_steps=1000, 
-                  saved_steps=750)
+                      saved_steps=750)
 
 
 blaine_65_sm<-data.frame(DO.obs=blaine_65$oxy, DO.sat=blaine_65$oxysat, 
-                             temp.water=blaine_65$temp, depth=rep(0.28,length(blaine_65$temp)), 
-                             light=blaine_65$light, solar.time=blaine_65$solar.time)
+                         temp.water=blaine_65$temp, depth=rep(0.28,length(blaine_65$temp)), 
+                         light=blaine_65$light, solar.time=blaine_65$solar.time)
 
 
 #blaine_65_fit <- metab(blaine_specs, data=blaine_65_sm, info=c(site='Blaine65', source='Bob Hall'))
 
 #save(blaine_65_fit, file="./blaine_65_fit.RData")
 
-load(file="./blaine_65_fit.RData")
+#load(file="./blaine_65_fit.RData")
 
-plot_DO_preds(predict_DO(blaine_65_fit))
+#plot_DO_preds(predict_DO(blaine_65_fit))
 
-plot_metab_preds(predict_metab(blaine_65_fit))
+#plot_metab_preds(predict_metab(blaine_65_fit))
 
-blaine_params<-get_params(blaine_65_fit , uncertainty='ci')
-write.csv(blaine_params, "blaine_params.csv")
+#blaine_params<-get_params(blaine_65_fit , uncertainty='ci')
+#write.csv(blaine_params, "blaine_params.csv")
 
 
 
@@ -119,7 +120,7 @@ plot(blaine_65$solar.time[100:244], 100*blaine_65$oxy[100:244]/blaine_65$oxysat[
 ###
 ##Estimate time specific NEP based on oxygen for the 6 days
 
-lightinaday<-blaine_65$light[100:990]/(sum(blaine_65$light[100:990])/6  )
+lightinaday<-blaine_65$light[108:971]/(sum(blaine_65$light[108:971])/6  )
 
 NEP<- mean(blaine_params$GPP.daily, na.rm=T)*lightinaday +  mean(blaine_params$ER.daily, na.rm=T)*(10/1440)
 
@@ -131,12 +132,11 @@ NEP_mmol<- (1440/10)*NEP*1000/32
 NEP_gC<- (1440/10)*NEP*12/32
 plot(NEP_gC)
 
-plot(blaine_65$solar.time[100:990], -NEP_gC, type="l", ylim=c(-300,600), xlab="Solar time", ylab= "-NEP mmol m-2 d-1" )
-points (co2time,co2flux, pch=16, col="dark green")
+#plot(blaine_65$solar.time[100:990], -NEP_gC, type="l", ylim=c(-300,600), xlab="Solar time", ylab= "-NEP mmol m-2 d-1" )
+#points (co2time,co2flux, pch=16, col="dark green")
 
 
-plot(blaine_65$local_time[100:990], -NEP_gC, type="l", ylim=c(-4,8), xlab="Solar time", ylab= "-NEP mmol m-2 d-1" )
-
+#plot(blaine_65$local_time[100:990], -NEP_gC, type="l", ylim=c(-4,8), xlab="Solar time", ylab= "-NEP mmol m-2 d-1" )
 
 
 ###Big switch to CO2 here
@@ -175,8 +175,9 @@ k_blaine<- 13.5* 0.195 #K from sM, 0.195 is z Units m/d
 
 pco2$bela_co2_flux<- KCO2fromK600(pco2$bela_temp,k_blaine) *(pco2$bela_co2_conc-pco2$satconc)
 
-plot(pco2$dtime,pco2$bela_co2_flux, ylim=c(0,5))
-lines(blaine_65$local_time[100:990], -NEP_gC)
+#plot(pco2$dtime,pco2$bela_co2_flux, ylim=c(0,5))
+#lines(blaine_65$local_time[100:990], -NEP_gC)
+
 pco2$neplight<- calc_light(force_tz(pco2$dtime, "UTC"), latitude=48.186, longitude=-114.133, max.PAR =2326, attach.units = F)
 
 
@@ -186,14 +187,13 @@ pco2$neplight<- calc_light(force_tz(pco2$dtime, "UTC"), latitude=48.186, longitu
 (sum(pco2$bela_co2_flux)*10/1440)/7  # 3.1 g C/d CO2 emission
 
 
-par(mai=c(0.7,0.7,0.1,0.1), mgp=c(2,1,0))
-plot(pco2$dtime,pco2$bela_co2_flux, ylim=c(-7,5), ylab="Flux gC m-2 d-1", xlab="", pch=16, cex=0.8)
-lines(blaine_65$local_time[100:990], -NEP_gC, col="blue")
-lines(pco2$dtime,rep(0, length(pco2$dtime)))
-lines(pco2m$dtime,pco2m$C.mod.flux, col="red", lwd=1.8)
+#par(mai=c(0.7,0.7,0.1,0.1), mgp=c(2,1,0))
+#plot(pco2$dtime,pco2$bela_co2_flux, ylim=c(-7,5), ylab="Flux gC m-2 d-1", xlab="", pch=16, cex=0.8)
+#lines(blaine_65$local_time[100:990], -NEP_gC, col="blue")
+#lines(pco2$dtime,rep(0, length(pco2$dtime)))
+#lines(pco2m$dtime,pco2m$C.mod.flux, col="red", lwd=1.8)
 
 
 
-                                                     
 
-                                                     
+

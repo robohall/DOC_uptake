@@ -21,7 +21,7 @@ KQ_out<- function(data, site_data){
   velocity<- site_data$length/site_data$travel_time
   z<-0.001*Q/(site_data$width*velocity)
   
-
+  
   
   c(K, Q, velocity, z)
   
@@ -43,9 +43,6 @@ KQ$code <-code
 
 KQ$vf<-( KQ$q*0.001*1440/site_info$width[1:6])* KQ$K
 
-vf_mmmin <- KQ$vf*1000/1440 ##mm/min
-mean(vf_mmmin[1:4])
-
 ##save lots of stan coding by --calculating--R_g outside of it
 R_g_out<- function(data,Q){
   removed_c_flux = data$removed_c*Q
@@ -63,8 +60,8 @@ R_g<-NA
 for ( i in 1:6){
   
   dat<- data_doc[data_doc$trial==i, ]
- R_g_one<- R_g_out(data=dat, Q=KQ$q[i])
- R_g<-c(R_g,R_g_one)
+  R_g_one<- R_g_out(data=dat, Q=KQ$q[i])
+  R_g<-c(R_g,R_g_one)
   
 }
 R_g<-R_g[-1]
@@ -91,7 +88,7 @@ doc_steps<-  dic_fit %>%
 med_doc_steps<- median_qi(doc_steps)
 
 head(doc_steps)
-  
+
 pred_steps<- dic_fit %>% 
   spread_draws(pred_imm[i], pred_delayed[i], ndraws=200)
 pred_steps$group<- rep(data_doc$trial, each=200)
@@ -143,3 +140,4 @@ mean(KQ$sw[5:6])
 
 mean(KQ$vf[1:4])
 mean(KQ$vf[5:6])
+

@@ -147,9 +147,9 @@ for (i in 2:length(dat$bela_temp)) {
     ((GPP/z)*(light[i]/(sum(light)/6))) + 
     ER*ts/z +
     KCO2fromK600(temp[i],K)*ts*(csat(temp[i],bp) - C.mod[i-1]) 
-Ceq<-Carbfrom_D_A(D1=D.mod[i-1],K1=K1calc(temp[i-1]), K2=K2calc(temp[i-1]), A=alk)
-C.mod[i]<-Ceq$C
-pH.mod[i]<-Ceq$pH
+  Ceq<-Carbfrom_D_A(D1=D.mod[i-1],K1=K1calc(temp[i-1]), K2=K2calc(temp[i-1]), A=alk)
+  C.mod[i]<-Ceq$C
+  pH.mod[i]<-Ceq$pH
 }
 
 plot(C.mod*12)
@@ -208,8 +208,10 @@ plot(NEP_C*1000)
 plot(NEP_mmol)
 
 plot( (dat$bela_co2_conc/12)-csat(dat$bela_temp, bp), (blaine65_trim$oxy-blaine65_trim$oxysat)/32, xlim=c(-0.05,0.35), ylim=c(-0.2,0.2), pch=16, col="red" ,
-     xlab="DIC departure (mmol/L)", ylab="O2 depaorture (mmol/L)")
+      xlab="DIC departure (mmol/L)", ylab="O2 depaorture (mmol/L)")
 lines(c(-0.05,0.35), c(0,0))
 lines( c(0,0), c(-0.2,0.2))
 lines( c(0.17,0.35), c(0.08,-0.1), lwd=2)
+
+dev.off()
 

@@ -122,7 +122,7 @@ removed_c<- b_g1_up_info$add_ratio*(data$SpC.us.cm_1-bkg)-data_13C
 
 
 b_g1_up<-data.frame(code=rep("b_g1_up", length(data$MinFrom0)), MinFrom0 = data$MinFrom0, SpC_corr=data$SpC.us.cm_1-bkg, DOC_conc=data$DOC_conc, Delta.13C= data$Delta.13C,
-                      AF_corr=AF_corr,doc_13C=data_13C, delCO2=data$delCO2, co2AF_corr=data_co2AF_corr, DIC13=data_13DIC, removed_c=removed_c)
+                    AF_corr=AF_corr,doc_13C=data_13C, delCO2=data$delCO2, co2AF_corr=data_co2AF_corr, DIC13=data_13DIC, removed_c=removed_c)
 
 
 
@@ -194,7 +194,7 @@ removed_c<- na.approx(removed_c)
 plot(data$MinFrom0, removed_c)
 
 b_g2_up<-data.frame(code=rep("b_g2_up", length(data$MinFrom0)),MinFrom0 = data$MinFrom0, SpC_corr=condcorr, DOC_conc=data$DOC_conc, Delta.13C= data$Delta.13C,
-                      AF_corr=AF_corr,doc_13C=data_13C, delCO2=data$delCO2, co2AF_corr=data_co2AF_corr, DIC13=data_13DIC, removed_c=removed_c)
+                    AF_corr=AF_corr,doc_13C=data_13C, delCO2=data$delCO2, co2AF_corr=data_co2AF_corr, DIC13=data_13DIC, removed_c=removed_c)
 
 
 
@@ -267,7 +267,7 @@ removed_c[41:45]<-c(0,0,0,0,0)
 plot(data$MinFrom0, removed_c)
 
 b_g2_down<-data.frame(code=rep("b_g2_down", length(data$MinFrom0)), MinFrom0 = data$MinFrom0, SpC_corr=condcorr, DOC_conc=data$DOC_conc, Delta.13C= data$Delta.13C,
-                    AF_corr=AF_corr,doc_13C=data_13C, delCO2=data$delCO2, co2AF_corr=data_co2AF_corr, DIC13=data_13DIC, removed_c=removed_c)
+                      AF_corr=AF_corr,doc_13C=data_13C, delCO2=data$delCO2, co2AF_corr=data_co2AF_corr, DIC13=data_13DIC, removed_c=removed_c)
 
 
 
@@ -334,7 +334,7 @@ plot(data$MinFrom0, condcorr)
 
 
 b_l_up<-data.frame(code=rep("b_l_up", length(data$MinFrom0)), MinFrom0 = data$MinFrom0, SpC_corr=condcorr, DOC_conc=data$DOC_conc, Delta.13C= data$Delta.13C,
-                    AF_corr=AF_corr,doc_13C=data_13C, delCO2=data$delCO2, co2AF_corr=data_co2AF_corr, DIC13=data_13DIC, removed_c=removed_c)
+                   AF_corr=AF_corr,doc_13C=data_13C, delCO2=data$delCO2, co2AF_corr=data_co2AF_corr, DIC13=data_13DIC, removed_c=removed_c)
 
 
 ######
@@ -409,7 +409,7 @@ plot(data$MinFrom0, removed_c)
 170*nutint(time=data$MinFrom0, removed_c, bkg=0)
 
 b_l_down<-data.frame(code=rep("b_l_down", length(data$MinFrom0)), MinFrom0 = data$MinFrom0, SpC_corr=condcorr, DOC_conc=data$DOC_conc, Delta.13C= data$Delta.13C,
-                   AF_corr=AF_corr,doc_13C=data_13C, delCO2=data$delCO2, co2AF_corr=data_co2AF_corr, DIC13=data_13DIC, removed_c=removed_c)
+                     AF_corr=AF_corr,doc_13C=data_13C, delCO2=data$delCO2, co2AF_corr=data_co2AF_corr, DIC13=data_13DIC, removed_c=removed_c)
 
 
 
