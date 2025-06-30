@@ -78,10 +78,10 @@ fig1plot <- ggplot(data = data_doc)+ theme_bw()+
   scale_x_log10(limits = c(2, 2000))+
   scale_y_continuous(limits = c(-2.02, 14.16))+
   facet_wrap(~order,  ncol=2, labeller = label_parsed)+
-  labs(x = expression("Time from Addition Start (min)"), y = expression("C Flux (mg/min)"))+
-  geom_text(data = sum_c, aes(x=10, y=12, label = doc_flux_label, fontface = "bold", size = 10), color = "#F98400")+
-  geom_text(data = sum_c, aes(x=10, y=10, label = dic_flux_label, fontface = "bold", size = 10), color = "#005AB5")+
-  geom_text(data = sum_c, aes(x=10, y=8, label = ratio_label, fontface = "bold", size = 10))+
+  labs(x = expression("Time from Addition Start (min)"), y = expression(""^13*"C Flux (mg/min)"))+
+  geom_text(data = sum_c, aes(x=10, y=12, label = doc_flux_label, size = 10), color = "#F98400")+
+  geom_text(data = sum_c, aes(x=10, y=10, label = dic_flux_label,  size = 10), color = "#005AB5")+
+  geom_text(data = sum_c, aes(x=10, y=8, label = ratio_label,  size = 10))+
   theme(plot.background = element_blank(),
         legend.position = "none",
         axis.title = element_text(color = "black", size = 12),
