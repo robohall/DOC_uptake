@@ -194,6 +194,30 @@ pco2$neplight<- calc_light(force_tz(pco2$dtime, "UTC"), latitude=48.186, longitu
 #lines(pco2m$dtime,pco2m$C.mod.flux, col="red", lwd=1.8)
 
 
+#####Calculation of effective residence time for DIC
 
 
+plot(pco2$bela_co2_flux)
 
+mean(pco2$bela_co2_flux/12)
+sd((pco2$bela_co2_flux/12))
+quantile(pco2$bela_co2_flux/12, c(0.025,.975))
+
+co2flux_night<-4.3 /12 #mol C m-2 d-1
+co2flux_day<- 1.7 /12
+
+DIC_day <- 5.3 #mol m-3
+DIC_night <- 5.45
+
+z<-0.195
+
+K_dic_night<- co2flux_day/(DIC_night*z)
+K_dic_day<- co2flux_day/(DIC_day*z)
+
+
+0.01 *86400 / K_dic_day
+
+#61 m reach, v=0.5m/min, =720 m/d
+
+exp(-(61/720)*K_dic_day)
+1-0.988

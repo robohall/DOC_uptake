@@ -421,7 +421,13 @@ data_doc<- rbind(b_g1_up, b_g1_down, b_g2_up, b_g2_down, b_l_up, b_l_down)
 write.csv(data_doc,"./data_doc.csv")
 
 
+##pH summary
 
+mean(c(blaine0809_solute$pH,blaine0809_solute$pH,blaine0815$pH), na.rm=T)
+
+#DOC summary
+data_doc$DOC_conc
+median(data_doc$DOC_conc, na.rm=T)
 ###
 ####
 
