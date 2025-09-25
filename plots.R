@@ -196,15 +196,21 @@ ggsave(fig3plot, filename = "param.pdf", width = 5, height = 4, units = "in", dp
 fig4 <- read.csv("fig4.csv")
 fig4$dtime <- as.POSIXct(fig4$dtime, format = "%Y-%m-%d %H:%M:%S")
 
+
 #---Generate Figure 4 (CO2 Emission Fluxes and C vs. O Departure Plots)
 
 fig4a<-ggplot()+
   theme_bw()+
-  coord_cartesian(ylim = c(-7,5))+
-  geom_point(data = fig4, aes(x = dtime, y = bela_co2_flux), size = 2, color = "black", fill = "#333333", shape = 21, alpha = 0.8)+
-  geom_line(data = fig4, aes(x = dtime, y = -NEP_gC), color = "#00880E", size = 1)+
-  geom_line(data = fig4, aes(x = dtime, y = C.mod.flux), , color = "#C47B1A", size = 1)+
+  coord_cartesian(xlim = c(as.POSIXct("2019-08-10 04:00:00"), as.POSIXct("2019-08-17 0:00:00")), ylim = c(-7,5))+
+  geom_point(data = fig4, aes(x = dtime, y = bela_co2_flux), size = 2, color = "#ae5c00", fill = "#fb9b31", shape = 21, alpha = 0.7)+
+  geom_line(data = fig4, aes(x = dtime, y = -NEP_gC), color = "#006435", size = 1)+
+  geom_line(data = fig4, aes(x = dtime, y = C.mod.flux), , color = "#643500", size = 1)+
+  geom_line(data = fig4, aes(x = dtime, y = -NEP_gC_EQ1.7), color = "#00A357", size = 1, linetype = "dashed")+
+  geom_line(data = fig4, aes(x = dtime, y = C.mod.flux_EQ1.7), , color = "#A35700", size = 1, linetype = "dashed")+
   geom_hline(yintercept = 0, color = "black")+
+  annotate("text", x = as.POSIXct("2019-08-16 16:00:00"), y = 4.8, label = (expression(bold(CO['2,obs']))), color = "#F98400", size = 4)+
+  annotate("text", x = as.POSIXct("2019-08-16 13:00:00"), y = -3, label = (expression(bold('-NEP'))), color = "#006435", size = 4)+
+  annotate("text", x = as.POSIXct("2019-08-16 16:00:00"), y = 2.2, label = (expression(bold(CO['2,pred']))), color = "#643500", size = 4)+
   labs(y = expression(CO['2']~~Emission~Flux~~'(g'~C~m^-2~d^-1*')'))+ 
   theme(plot.background = element_blank(),
         panel.grid.minor = element_blank(),
@@ -219,13 +225,13 @@ fig4a
 fig4b<-ggplot()+
   theme_bw()+
   coord_cartesian(xlim=c(-0.05,0.35), ylim=c(-0.2,0.2))+
-  geom_point(data = fig4, aes(x = (DIC_pred-DIC_sat), y = (oxy-oxysat)/32), size = 2, shape = 21, color = "#005AB5", fill = "#007AB9", alpha = 0.8)+
-  geom_point(data = fig4, aes(x = (bela_co2_conc/12)-bela_co2_sat, y = (oxy-oxysat)/32), size = 2, shape = 21, color = "#F98400", fill = "#F09519", , alpha = 0.8)+
+  geom_point(data = fig4, aes(x = (DIC_pred-DIC_sat), y = (oxy-oxysat)/32), size = 2, shape = 21, color = "#005AB5", fill = "#669cd3", alpha = 0.7)+
+  geom_point(data = fig4, aes(x = (bela_co2_conc/12)-bela_co2_sat, y = (oxy-oxysat)/32), size = 2, shape = 21, color = "#ae5c00", fill = "#fb9b31", , alpha = 0.7)+
   geom_segment(data = fig4, aes(x = 0.17, y = 0.08, xend = 0.35, yend = -0.1), size = 1, color = "black")+
   geom_hline(yintercept = 0, color = "black")+
   geom_vline(xintercept = 0, color = "black")+
-  annotate("text", x = 0.05, y = 0.198, label = (expression(CO['2'])), fontface = "bold", color = "#F98400", size = 4)+
-  annotate("text", x = 0.22, y = 0.2, label = (expression(DIC)), fontface = "bold", color = "#005AB5", size = 4)+
+  annotate("text", x = 0.05, y = 0.188, label = (expression(bold(CO['2']))), color = "#F98400", size = 4)+
+  annotate("text", x = 0.22, y = 0.19, label = (expression(bold(DIC))), color = "#005AB5", size = 4)+
   labs(x = expression(C~departure~'(mmol/L)'), y = expression(O['2']~departure~'(mmol/L)'))+ 
   theme(panel.grid.minor = element_blank(),
         panel.grid.major = element_blank(),
@@ -244,4 +250,35 @@ fig4plot <- fig4plot + plot_annotation(tag_levels = 'A') &
 fig4plot
 
 ggsave(fig4plot, filename = "co2_model.pdf", width = 9, height = 4, units = "in", dpi = 300)
+
+
+
+
+#---Generate Supplemental Figure with EQ = 1.7 (EQ as in Diamond et al., 2025, L&O)
+
+fig4$NEP_gC_EQ1.7 <- fig4$NEP_gC * 0.58
+fig4$C.mod.flux_EQ1.7 <- fig4$C.mod.flux * 0.58
+
+suppfig<-ggplot()+
+  theme_bw()+
+  coord_cartesian(xlim = c(as.POSIXct("2019-08-10 04:00:00"), as.POSIXct("2019-08-17 0:00:00")), ylim = c(-7,5))+
+  geom_point(data = fig4, aes(x = dtime, y = bela_co2_flux), size = 2, color = "#ae5c00", fill = "#fb9b31", shape = 21, alpha = 0.7)+
+  geom_line(data = fig4, aes(x = dtime, y = -NEP_gC), color = "#006435", size = 0.75)+
+  geom_line(data = fig4, aes(x = dtime, y = C.mod.flux), , color = "#643500", size = 0.75)+
+  geom_line(data = fig4, aes(x = dtime, y = -NEP_gC_EQ1.7), color = "#00A357", size = 0.75, linetype = "dashed")+
+  geom_line(data = fig4, aes(x = dtime, y = C.mod.flux_EQ1.7), , color = "#A35700", size = 0.75, linetype = "dashed")+
+  geom_hline(yintercept = 0, color = "black")+
+  annotate("text", x = as.POSIXct("2019-08-16 16:00:00"), y = 4.8, label = (expression(bold(CO['2,obs']))), color = "#F98400", size = 4)+
+  annotate("text", x = as.POSIXct("2019-08-16 13:00:00"), y = -3, label = (expression(bold('-NEP'))), color = "#006435", size = 4)+
+  annotate("text", x = as.POSIXct("2019-08-16 16:00:00"), y = 2.2, label = (expression(bold(CO['2,pred']))), color = "#643500", size = 4)+
+  labs(y = expression(CO['2']~~Emission~Flux~~'(g'~C~m^-2~d^-1*')'))+ 
+  theme(plot.background = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(),
+        axis.title.x = element_blank(),
+        axis.title.y = element_text(color = "black", size = 12),
+        axis.text = element_text(color = "black", size = 10))+
+  theme(panel.border = element_rect(fill=NA,color="black", linewidth=1, 
+                                    linetype="solid"))
+suppfig
 
