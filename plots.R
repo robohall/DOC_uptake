@@ -263,22 +263,31 @@ suppfig<-ggplot()+
   theme_bw()+
   coord_cartesian(xlim = c(as.POSIXct("2019-08-10 04:00:00"), as.POSIXct("2019-08-17 0:00:00")), ylim = c(-7,5))+
   geom_point(data = fig4, aes(x = dtime, y = bela_co2_flux), size = 2, color = "#ae5c00", fill = "#fb9b31", shape = 21, alpha = 0.7)+
-  geom_line(data = fig4, aes(x = dtime, y = -NEP_gC), color = "#006435", size = 0.75)+
-  geom_line(data = fig4, aes(x = dtime, y = C.mod.flux), , color = "#643500", size = 0.75)+
-  geom_line(data = fig4, aes(x = dtime, y = -NEP_gC_EQ1.7), color = "#00A357", size = 0.75, linetype = "dashed")+
-  geom_line(data = fig4, aes(x = dtime, y = C.mod.flux_EQ1.7), , color = "#A35700", size = 0.75, linetype = "dashed")+
+  geom_line(data = fig4, aes(x = dtime, y = -NEP_gC, linetype = "EQ = 1.0"), color = "#006435", size = 0.75)+
+  geom_line(data = fig4, aes(x = dtime, y = C.mod.flux, linetype = "EQ = 1.0"), color = "#643500", size = 0.75)+
+  geom_line(data = fig4, aes(x = dtime, y = -NEP_gC_EQ1.7, linetype = "EQ = 1.7"), color = "#00A357", size = 0.75)+
+  geom_line(data = fig4, aes(x = dtime, y = C.mod.flux_EQ1.7, linetype = "EQ = 1.7"), color = "#A35700", size = 0.75)+
   geom_hline(yintercept = 0, color = "black")+
   annotate("text", x = as.POSIXct("2019-08-16 16:00:00"), y = 4.8, label = (expression(bold(CO['2,obs']))), color = "#F98400", size = 4)+
   annotate("text", x = as.POSIXct("2019-08-16 13:00:00"), y = -3, label = (expression(bold('-NEP'))), color = "#006435", size = 4)+
   annotate("text", x = as.POSIXct("2019-08-16 16:00:00"), y = 2.2, label = (expression(bold(CO['2,pred']))), color = "#643500", size = 4)+
+  scale_linetype_manual(values = c("EQ = 1.0" = "solid", "EQ = 1.7" = "dashed")) +
+  guides(linetype = guide_legend(override.aes = list(color = "black", size = 0.75), keywidth = unit(2, "lines"))) +
   labs(y = expression(CO['2']~~Emission~Flux~~'(g'~C~m^-2~d^-1*')'))+ 
   theme(plot.background = element_blank(),
         panel.grid.minor = element_blank(),
         panel.grid.major = element_blank(),
         axis.title.x = element_blank(),
         axis.title.y = element_text(color = "black", size = 12),
-        axis.text = element_text(color = "black", size = 10))+
+        axis.text = element_text(color = "black", size = 10),
+        legend.title = element_blank(),
+        legend.text = element_text(color = "black", size = 10),
+        legend.position = c(0.9, 0),
+        legend.justification = c(0.5, 0),
+        legend.background = element_blank(), 
+        legend.spacing.x = unit(1, "cm"))+
   theme(panel.border = element_rect(fill=NA,color="black", linewidth=1, 
                                     linetype="solid"))
 suppfig
 
+ggsave(suppfig, filename = "supp_EQcompare.pdf", width = 6.5, height = 4, units = "in", dpi = 300)
